@@ -23,10 +23,9 @@ extends Classifier
     @Override
     public void buildClassifier(Instances data) 
     {
-        int attributes = data.numAttributes();
+        int attributes = data.numAttributes() - 1;
         ArrayList nodesPerLayer = new ArrayList();
-        nodesPerLayer.add(attributes + 2);
-        
+        nodesPerLayer.add(attributes * 3 / 2);
         buildClassifier(data, 1, nodesPerLayer);
     }
     
@@ -37,7 +36,17 @@ extends Classifier
         
         int inputs = data.numAttributes() - 1;
         
-        neuralNet = new NeuralNetwork(hiddenLayers + 1, nodesPerLayer);
+        neuralNet = new NeuralNetwork(inputs, nodesPerLayer);
+        double lastTry = 0;
+        
+        for (int i = 0; i < 20000; i++)
+        {
+            lastTry = neuralNet.train(data);
+            if (i % 1000 == 0)
+            {
+                System.out.println(lastTry);
+            }
+        }
         
         int done = 0;
     }
